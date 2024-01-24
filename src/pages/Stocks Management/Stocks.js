@@ -153,6 +153,7 @@ function Stocks() {
                       <tr>
                         <th className="name">Index</th>
                         <th className="name">Product-Name</th>
+                        <th className="name">sku</th>
                         <th className="name">Product-Color</th>
                         <th className="name">Product-Size</th>
                         <th className="name">Quantity</th>
@@ -167,6 +168,7 @@ function Stocks() {
                         <tr key={content.id}>
                           <td className="product-name">{key + 1}</td>
                           <td className="product-name">{content.name}</td>
+                          <td className="product-name">{content.sku}</td>
                           <td className="product-name">{content.color || "NA"}</td>
                           <td className="product-name">{content.size || "NA"}</td>
                           <td className="product-name">{content.quantity}</td>
@@ -195,7 +197,7 @@ function Stocks() {
 
                           <td>
                             <div className="hstack gap-2">
-                              {/* <button
+                              <button
                                 className="btn btn-sm btn-soft-info edit-list"
                                 onClick={() => {
                                   setStockForUpdate(content);
@@ -203,7 +205,7 @@ function Stocks() {
                                 }}
                               >
                                 <i className="ri-pencil-fill align-bottom" />
-                              </button> */}
+                              </button>
 
                               <button
                                 className="btn btn-sm btn-soft-danger remove-list"
