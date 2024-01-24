@@ -51,7 +51,7 @@ function Stocks() {
 
     function filterItems(arr, query) {
       return arr.filter(function (el) {
-        return el.name.toLowerCase().indexOf(query.toLowerCase()) !== -1;
+        return el.name.toLowerCase().indexOf(query.toLowerCase()) !== -1 ;
       });
     }
 
