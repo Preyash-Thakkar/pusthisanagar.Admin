@@ -48,15 +48,18 @@ function Stocks() {
 
   const searchList = (e) => {
     let inputVal = e.toLowerCase();
-
+  
     function filterItems(arr, query) {
       return arr.filter(function (el) {
-        return el.name.toLowerCase().indexOf(query.toLowerCase()) !== -1 ;
+        const nameMatch = el.name && el.name.toLowerCase().includes(query);
+        const skuMatch = el.sku && el.sku.toLowerCase().includes(query);
+        return nameMatch || skuMatch;
       });
     }
-
+  
     let filterData = filterItems(allContentData, inputVal);
     setContentData(filterData);
+  
     if (filterData.length === 0) {
       document.getElementById("noresult").style.display = "block";
       document.getElementById("todo-task").style.display = "none";
@@ -65,6 +68,7 @@ function Stocks() {
       document.getElementById("todo-task").style.display = "block";
     }
   };
+  
 
   const handleDeleteStocks = async (id) => {
     const res = await DeleteStocks(id);
