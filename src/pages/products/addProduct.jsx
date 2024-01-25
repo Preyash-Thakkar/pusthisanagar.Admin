@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 import JoditEditor from "jodit-react";
 import {
   Card,
@@ -164,6 +165,29 @@ const AddProduct = () => {
   };
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch all products from the backend
+        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/product/getallproducts`);
+        console.log("preyash",response)
+
+        const allProducts = response.products;
+        console.log("Test",allProducts)
+
+        // Filter products with isVariant: true
+        const variations = allProducts.filter(products => products.OtherVariations);
+
+        // Extract names from variations and set in the state
+        const variationNames = variations.map(variation => variation.name);
+        setOtherVariations(variationNames);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+
+    // Your existing code
     if (
       GstData.length === 0 ||
       DailyRateData.length === 0 ||
@@ -181,7 +205,7 @@ const AddProduct = () => {
         console.log(pfu);
         const filters = pfu.product.filters.map(value => {
           return { value: value, label: value };
-      })
+        })
         setShowSilverGoldDropdown(pfu.product.calculationOnWeight);
         setSelectedImages(pfu.product.imageGallery);
         setSelectedTags(pfu.product.tags);
@@ -298,6 +322,19 @@ const AddProduct = () => {
   });
 
   console.log(productForm)
+  const [otherVariations, setOtherVariations] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredVariations, setFilteredVariations] = useState(otherVariations);
+  const handleSearch = (e) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+
+    const filteredOptions = otherVariations.filter((variation) =>
+      variation.toLowerCase().includes(term)
+    );
+
+    setFilteredVariations(filteredOptions);
+  };
 
   return (
     <div className="page-content">
@@ -904,6 +941,23 @@ const AddProduct = () => {
                       </div>
                     </div>
                   </Col>
+                  <div>
+      {/* OtherVariations dropdown */}
+      <label htmlFor="otherVariations">Other Variants</label>
+      <select
+        id="OtherVariations"
+        name="OtherVariations"
+        value={productForm.values.OtherVariations || ''}
+        onChange={productForm.handleChange}
+      >
+        <option value="">--select--</option>
+        {otherVariations.map((variationName, index) => (
+          <option key={index} value={variationName}>
+            {variationName}
+          </option>
+        ))}
+      </select>
+    </div>
                 </Row>
               </Col>
               <Col sm={4}>
