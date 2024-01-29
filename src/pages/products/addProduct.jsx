@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import Select from 'react-select';
 import JoditEditor from "jodit-react";
 import {
   Card,
@@ -169,24 +170,27 @@ const AddProduct = () => {
       try {
         // Fetch all products from the backend
         const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/product/getallproducts`);
-        console.log("preyash",response)
-
+        console.log("preyash", response);
+  
         const allProducts = response.products;
-        console.log("Test",allProducts)
-
+        console.log("Test", allProducts);
+  
         // Filter products with isVariant: true
         const variations = allProducts.filter(products => products.OtherVariations);
-
+  
         // Extract names from variations and set in the state
-        const variationNames = variations.map(variation => variation.name);
+        const variationNames = variations.map(variation => ({
+          label: variation.name,
+          value: variation._id,
+        }));
         setOtherVariations(variationNames);
       } catch (error) {
         console.error(error);
       }
     };
-
+  
     fetchData();
-
+  
     // Your existing code
     if (
       GstData.length === 0 ||
@@ -203,20 +207,21 @@ const AddProduct = () => {
       getspecificproduct(id).then((pfu) => {
         setFormVAlues(pfu.product);
         console.log(pfu);
-        const filters = pfu.product.filters.map(value => {
+        const filters = pfu.product.filters.map((value) => {
           return { value: value, label: value };
-        })
+        });
         setShowSilverGoldDropdown(pfu.product.calculationOnWeight);
         setSelectedImages(pfu.product.imageGallery);
         setSelectedTags(pfu.product.tags);
         setselectedFilters(filters);
-        setselectedItems(pfu.product.filters)
+        setselectedItems(pfu.product.filters);
         setSelectedcolors(pfu.product.color);
         setSelectedseasons(pfu.product.season);
         setSelectedmaterials(pfu.product.material);
       });
     }
-  }, [id]);
+  }, []);
+  
 
   const productForm = useFormik({
     enableReinitialize: true,
@@ -247,6 +252,8 @@ const AddProduct = () => {
       hsnCode: (formVAlues && formVAlues.hsnCode) || "",
       productColor: (formVAlues && formVAlues.productColor) || "",
       productSize: (formVAlues && formVAlues.productSize) || "",
+      OtherVariations: (formVAlues && formVAlues.OtherVariations) || [],
+      OtherVariationIds: (formVAlues && formVAlues.OtherVariationIds) || [],
     },
 
     validationSchema: Yup.object({
@@ -284,6 +291,8 @@ const AddProduct = () => {
       formData.append("hsnCode", values.hsnCode);
       formData.append("productColor", values.productColor);
       formData.append("productSize", values.productSize);
+      formData.append("OtherVariations", values.OtherVariations);
+
       for (let i = 0; i < selectedTags.length; i++) {
         formData.append("tags", selectedTags[i]);
       }
@@ -943,20 +952,40 @@ const AddProduct = () => {
                   </Col>
                   <div>
       {/* OtherVariations dropdown */}
-      <label htmlFor="otherVariations">Other Variants</label>
-      <select
-        id="OtherVariations"
-        name="OtherVariations"
-        value={productForm.values.OtherVariations || ''}
-        onChange={productForm.handleChange}
-      >
-        <option value="">--select--</option>
-        {otherVariations.map((variationName, index) => (
-          <option key={index} value={variationName}>
-            {variationName}
-          </option>
-        ))}
-      </select>
+      <label htmlFor="OtherVariations">Other Variants</label>
+{/* <Select
+  id="OtherVariations"
+  name="OtherVariations"
+  value={productForm.values.OtherVariations || []}  // Ensure it's an array
+  onChange={(selectedOptions) => {
+    productForm.setFieldValue('OtherVariations', selectedOptions);
+  }}
+  options={otherVariations}
+  isSearchable
+  isMulti  // Enable multi-select
+  placeholder="--select--"
+/> */}
+<Select
+  id="OtherVariations"
+  name="OtherVariations"
+  value={productForm.values.OtherVariations || []}
+  onChange={(formValues) => {
+    productForm.setFieldValue("OtherVariations", formValues);
+
+    // Access the values from the array
+    const valuesArray = formValues.map(option => option.value);
+
+    console.log("Selected values array:", valuesArray);
+  }}
+  options={otherVariations.map((variation) => ({ value: variation.value, label: variation.label }))}
+  isSearchable
+  isMulti
+  placeholder="--select--"
+/>
+
+
+
+
     </div>
                 </Row>
               </Col>
