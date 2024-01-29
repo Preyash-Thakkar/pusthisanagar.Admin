@@ -291,8 +291,12 @@ const AddProduct = () => {
       formData.append("hsnCode", values.hsnCode);
       formData.append("productColor", values.productColor);
       formData.append("productSize", values.productSize);
-      formData.append("OtherVariations", values.OtherVariations);
 
+      values.OtherVariations.forEach((item, index) => {
+        formData.append(`OtherVariations[${index}]`, item.value);
+      });
+
+      console.log(values.OtherVariations.map((item)=>item.value), "____________>>>")
       for (let i = 0; i < selectedTags.length; i++) {
         formData.append("tags", selectedTags[i]);
       }
@@ -969,20 +973,17 @@ const AddProduct = () => {
   id="OtherVariations"
   name="OtherVariations"
   value={productForm.values.OtherVariations || []}
-  onChange={(formValues) => {
-    productForm.setFieldValue("OtherVariations", formValues);
+  onChange={(formVAlues) => {
+    productForm.setFieldValue("OtherVariations", formVAlues)
 
-    // Access the values from the array
-    const valuesArray = formValues.map(option => option.value);
-
-    console.log("Selected values array:", valuesArray);
+    console.log("form values 123",formVAlues.value);
   }}
   options={otherVariations.map((variation) => ({ value: variation.value, label: variation.label }))}
+  
   isSearchable
   isMulti
   placeholder="--select--"
 />
-
 
 
 
