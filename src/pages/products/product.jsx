@@ -187,7 +187,7 @@ const ProductMaster = () => {
                       <th scope="col">category</th>
                       <th className="price">Original Price</th>
                       <th className="price">Discounted</th>
-                      <th className="var">Add Varaition</th>
+                      {/* <th className="var">Add Varaition</th> */}
                       <th scope="col">actions</th>
                     </tr>
                   </thead>
@@ -226,7 +226,7 @@ const ProductMaster = () => {
                                 ? item.prices.discounted
                                 : "NA"}
                             </td>
-                            <td>
+                            {/* <td>
                               <div className="hstack gap-2 text-center">
                               {item.isVariant === false ? (
   <button
@@ -241,7 +241,7 @@ const ProductMaster = () => {
   <span>Varient</span>
 )}
                               </div>
-                            </td>
+                            </td> */}
                             <td>
                               <div className="hstack gap-2">
                                 <button
