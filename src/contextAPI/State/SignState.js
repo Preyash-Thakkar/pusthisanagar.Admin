@@ -773,7 +773,7 @@ export const SignState = (props) => {
     }
   };
 
-  // GetPrice Updates
+  // GetPrice Update
   const GetPriceUpdates = async () => {
     try {
       const response = await axios.post(`${url}/dailyrates/getprices`);
