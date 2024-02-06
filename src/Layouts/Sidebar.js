@@ -38,7 +38,7 @@ const Sidebar = ({ layoutType }) => {
     <React.Fragment>
       <div className="app-menu navbar-menu">
         <div className="navbar-brand-box" style={{padding : "20px 0"}}>   
-          <Link to="/" className="logo logo-dark">
+          <Link to="/dashboard" className="logo logo-dark">
             <span className="logo-sm">
               <img 
                src={lightLogo} 
@@ -51,7 +51,7 @@ const Sidebar = ({ layoutType }) => {
             </span>
           </Link>
 
-          <Link to="/" className="logo logo-light">
+          <Link to="/dashboard" className="logo logo-light">
             <span className="logo-sm">
               <img 
                src={lightLogo}
