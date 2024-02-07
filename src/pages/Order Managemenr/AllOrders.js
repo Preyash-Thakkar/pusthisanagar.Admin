@@ -22,7 +22,6 @@ import { Link } from "react-router-dom";
 
 const ITEMS_PER_PAGE = 20;
 
-
 const AllOrders = () => {
   const {
     GetAllOrders,
@@ -41,9 +40,12 @@ const AllOrders = () => {
   const [updatedOrderData, setUpdatedOrderData] = useState({
     status: "",
   });
-  const [searchQuery, setSearchQuery] = useState('');
-const [filteredOrders, setFilteredOrders] = useState([]);
-
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredOrders, setFilteredOrders] = useState([]);
+  const [paginatedOrders, setPaginatedOrders] = useState([]);
+  const sortOrdersByDate = (orders) => {
+    return orders.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  };
 
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
@@ -54,8 +56,8 @@ const [filteredOrders, setFilteredOrders] = useState([]);
   const GetOrders = async () => {
     const res = await GetAllOrders();
     console.log(res);
-
-    setOrdersData(res.orders);
+    const sortedOrders = sortOrdersByDate(res.orders);
+    setOrdersData(sortedOrders);
   };
 
   const toggledeletemodal = () => {
@@ -88,7 +90,7 @@ const [filteredOrders, setFilteredOrders] = useState([]);
   const getSpecificOrder = async (id) => {
     try {
       const response = await getSpecificOrderbyId(id);
-      console.log(response)
+      console.log(response);
       if (response.success) {
         setEditOrder(response.orderWithProductDetails.order);
         setUpdatedOrderData({
@@ -135,6 +137,16 @@ const [filteredOrders, setFilteredOrders] = useState([]);
     GetOrders();
   }, []);
 
+  useEffect(() => {
+    // Apply pagination on sorted data
+    const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
+    const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
+    const currentItems = OrdersData.slice(indexOfFirstItem, indexOfLastItem);
+
+    // If you're using filteredOrders somewhere else, ensure they are also sorted and paginated as necessary
+    // For simplicity, this example focuses on paginating the sorted OrdersData
+    setPaginatedOrders(currentItems); // Assuming you add this state for holding paginated orders
+  }, [currentPage, OrdersData]);
   const statusColors = {
     completed: { backgroundColor: "#28a745", color: "white" },
     pending: { backgroundColor: "#ffc107", color: "black" },
@@ -149,38 +161,34 @@ const [filteredOrders, setFilteredOrders] = useState([]);
     <>
       <div className="page-content">
         <Container fluid>
-        <BreadCrumb grandParent="Setup" parent="Orders" child="new orders" />
+          <BreadCrumb grandParent="Setup" parent="Orders" child="new orders" />
           <Row>
             <Col lg={12}>
               <Card>
-              <CardHeader className="d-flex justify-content-between align-items-center">
-             
-             <h4 className="card-title mb-0">All Orders</h4>
-             <Row className="align-items-center">
-               <Col className="col-lg-auto">
-                 <div className="search-box">
-                   <input
-                     type="text"
-                     id="searchTaskList"
-                     className="form-control search"
-                     placeholder="Search.."
-                     value={searchQuery}
-                     onChange={(e) => {
-                       setSearchQuery(e.target.value);
-                       searchOrders(e.target.value);
-                     }}
-                   />
-                   <i className="ri-search-line search-icon"></i>
-                 </div>
-               </Col>
-              
-             </Row>
-           
-         </CardHeader>
+                <CardHeader className="d-flex justify-content-between align-items-center">
+                  <h4 className="card-title mb-0">All Orders</h4>
+                  <Row className="align-items-center">
+                    <Col className="col-lg-auto">
+                      <div className="search-box">
+                        <input
+                          type="text"
+                          id="searchTaskList"
+                          className="form-control search"
+                          placeholder="Search.."
+                          value={searchQuery}
+                          onChange={(e) => {
+                            setSearchQuery(e.target.value);
+                            searchOrders(e.target.value);
+                          }}
+                        />
+                        <i className="ri-search-line search-icon"></i>
+                      </div>
+                    </Col>
+                  </Row>
+                </CardHeader>
 
                 <CardBody>
                   <div id="contentList">
-                    
                     <div className="table-responsive table-card mt-1 mb-3">
                       <table
                         className="table align-middle table-nowrap"
@@ -199,89 +207,26 @@ const [filteredOrders, setFilteredOrders] = useState([]);
                             <th className="action">Action</th>
                           </tr>
                         </thead>
-
                         <tbody className="list form-check-all">
-                          {searchQuery?filteredOrders.map((order, key) => (
+                          {(searchQuery
+                            ? sortOrdersByDate(filteredOrders)
+                            : sortOrdersByDate(currentItems)
+                          ).map((order, key) => (
                             <tr key={order.id}>
                               <th scope="row">
                                 <div className="form-check">
-                                  <td className="product-name">{key + 1}</td>
+                                  <td className="product-name text-center">
+                                    {key + 1}
+                                  </td>
                                 </div>
                               </th>
                               <td className="product-name">{order._id}</td>
                               <td className="product-name">
                                 {order.FirstName}
                               </td>
-                              <td className="product-name">{order.LastName}</td>
-                              <td className="product-name">
-                                ₹{order.totalAmount}
+                              <td className="product-name text-center">
+                                {order.LastName}
                               </td>
-                              <td className="product-name">
-                                {order.paymentMethod}
-                              </td>
-                              <td className="status">
-                                <span
-                                  className="badge badge-soft"
-                                  style={statusColors[order.status]}
-                                >
-                                  {order.status}
-                                </span>
-
-                                
-                              </td>
-
-                              {/* Add other columns here as needed */}
-                              <td>
-                                <div className="d-flex gap-2">
-                                  <div className="view">
-                                    <Link
-                                      to={`/vieworder/${order._id}`}
-                                      className="btn btn-sm btn-soft-info view-item-btn"
-                                    >
-                                      View
-                                    </Link>
-                                  </div>
-                                  <div className="edit">
-                                    <Link
-                                      onClick={() => toggleEditmodal(order._id)}
-                                      className="btn btn-sm btn-soft-success edit-item-btn"
-                                    >
-                                      <i className="ri-pencil-line"></i>
-                                    </Link>
-                                  </div>
-                                  <div className="remove">
-                                    <button
-                                      className="btn btn-sm btn-soft-danger remove-item-btn"
-                                      data-bs-toggle="modal"
-                                      data-bs-target="#deleteRecordModal"
-                                      onClick={() => {
-                                        toggledeletemodal();
-                                        setOrderToDelete(order);
-                                      }}
-                                    >
-                                      <i className="ri-delete-bin-line"></i>
-                                    </button>
-                                  </div>
-                                  {/* <div className="action">
-                                    <button className="btn btn-sm btn-secondary">
-                                      <i className="ri-settings-3-line"></i>
-                                    </button>
-                                  </div> */}
-                                </div>
-                              </td>
-                            </tr>
-                          )):currentItems.map((order, key) => (
-                            <tr key={order.id}>
-                              <th scope="row">
-                                <div className="form-check">
-                                  <td className="product-name text-center">{key + 1}</td>
-                                </div>
-                              </th>
-                              <td className="product-name">{order._id}</td>
-                              <td className="product-name">
-                                {order.FirstName}
-                              </td>
-                              <td className="product-name text-center">{order.LastName}</td>
                               <td className="product-name">
                                 ₹{order.totalAmount}
                               </td>
@@ -289,7 +234,7 @@ const [filteredOrders, setFilteredOrders] = useState([]);
                                 {order.paymentMethod}
                               </td>
                               <td className="product-name">
-                              {new Date(order.createdAt).toLocaleDateString()}
+                                {new Date(order.createdAt).toLocaleDateString()}
                               </td>
                               <td className="status">
                                 <span
@@ -298,11 +243,7 @@ const [filteredOrders, setFilteredOrders] = useState([]);
                                 >
                                   {order.status}
                                 </span>
-
-                                
                               </td>
-
-                              {/* Add other columns here as needed */}
                               <td>
                                 <div className="d-flex gap-2">
                                   <div className="view">
@@ -334,11 +275,6 @@ const [filteredOrders, setFilteredOrders] = useState([]);
                                       <i className="ri-delete-bin-line"></i>
                                     </button>
                                   </div>
-                                  {/* <div className="action">
-                                    <button className="btn btn-sm btn-secondary">
-                                      <i className="ri-settings-3-line"></i>
-                                    </button>
-                                  </div> */}
                                 </div>
                               </td>
                             </tr>
@@ -436,7 +372,6 @@ const [filteredOrders, setFilteredOrders] = useState([]);
               </select>
             </div>
             <ModalFooter>
-              
               <button
                 type="button"
                 className="btn btn-success"
@@ -487,7 +422,6 @@ const [filteredOrders, setFilteredOrders] = useState([]);
             </div>
           </div>
           <div className="d-flex gap-2 justify-content-center mt-4 mb-2">
-            
             <button
               type="button"
               className="btn w-sm btn-danger"
