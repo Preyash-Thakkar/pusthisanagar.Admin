@@ -155,6 +155,7 @@ const AddStocks = ({ refreshTable, StockForUpdate, setStockForUpdate }) => {
                 value={values.currentPricePerUnit}
                 onChange={handleChange}
                 onBlur={handleBlur}
+                readOnly
               />
             </Col>
             <Col lg={2}>
