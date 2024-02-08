@@ -96,16 +96,23 @@ export const deleteSubCategory = (data) =>
 export const updateSubCategory = (data, id) =>
   api.create(hostedUrl + "/subcategory/updatesubcategory/" + id, data);
 
+
+
 //sub sub category
 
-export const getSubSubCategory = async () => await api.create(hostedUrl + "/subsubcategory/getsubsubcategories");
+export const getSubSubCategory = async () =>
+  await api.create(hostedUrl + "/subsubcategory/getsubsubcategories");
 export const addsubSubCategory = (data) =>
   api.create(hostedUrl + "/subsubcategory/addsubsubcategory", data);
-  export const updatesubSubCategory = (data, id) =>
+export const updatesubSubCategory = (data, id) =>
   api.create(hostedUrl + "/subsubcategory/updatesubsubcategory/" + id, data);
+export const deletesubSubCategory = (data) =>
+  api.create(hostedUrl + "/subsubcategory/deletesubsubcategory/"+ data._id);
 export const getGst = async () => await api.create(hostedUrl + "/gst/getGst");
-export const getColors = async () => await api.create(hostedUrl + "/color/getcolors");
-export const getSize = async () => await api.create(hostedUrl + "/size/getSizes");
+export const getColors = async () =>
+  await api.create(hostedUrl + "/color/getcolors");
+export const getSize = async () =>
+  await api.create(hostedUrl + "/size/getSizes");
 
 //product
 

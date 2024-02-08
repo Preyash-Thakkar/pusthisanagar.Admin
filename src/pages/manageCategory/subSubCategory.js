@@ -29,6 +29,7 @@ import {
   getCategory,
   getSubCategory,
   getSubSubCategory,
+  deletesubSubCategory,
 } from "../../helpers/backend_helper";
 import Dropzone from "react-dropzone";
 import Loader from "../../Components/Common/Loader";
@@ -55,7 +56,6 @@ const SubSubCategoryMaster = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredSubCategories, setFilteredSubCategories] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  
 
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
@@ -66,6 +66,7 @@ const SubSubCategoryMaster = () => {
   const fetchData = async () => {
     try {
       const response = await getSubSubCategory();
+
       setTableData(response);
 
       const res = await getCategory();
@@ -112,8 +113,13 @@ const SubSubCategoryMaster = () => {
   };
 
   const handleDeleteCategory = async () => {
+    console.log("My record",recordForSubmit);
+
+    console.log("Invoked");
     if (recordForSubmit) {
+      await deletesubSubCategory(recordForSubmit);
       fetchData();
+
       setDeleteModal(false);
     }
   };
@@ -201,13 +207,13 @@ const SubSubCategoryMaster = () => {
                     >
                       <span className="visually-hidden">Loading...</span>
                     </div> */}
-                  <Loader error={tableData}/>
+                    <Loader error={tableData} />
                   </div>
                 )}
                 <table className="table">
                   <thead>
                     <tr>
-                      <th style={{width : "100px"}}>index</th>
+                      <th style={{ width: "100px" }}>index</th>
                       <th>category</th>
                       <th>sub category</th>
                       <th>sub sub category</th>
@@ -257,48 +263,44 @@ const SubSubCategoryMaster = () => {
                           </tr>
                         ))
                       : currentItems.map((item, key) => (
-                        <tr key={key}>
-                          <td>{key + 1}</td>
-                          <td>{item.CategoryTitle}</td>
-                          <td>{item.subCategoryTitle}</td>
-                          <td>{item.name}</td>
-                          <td>
-                            {" "}
-                            {item.isActive ? (
-                              <div>
-                                <span className="badge badge-soft-success badge-border">
-                                  Active
-                                </span>
-                              </div>
-                            ) : (
-                              <div>
-                                <span className="badge badge-soft-danger badge-border">
-                                  InActive
-                                </span>
-                              </div>
-                            )}
-                          </td>
+                          <tr key={key}>
+                            <td>{key + 1}</td>
+                            <td>{item.CategoryTitle}</td>
+                            <td>{item.subCategoryTitle}</td>
+                            <td>{item.name}</td>
+                            <td>
+                              {" "}
+                              {item.isActive ? (
+                                <div>
+                                  <span className="badge badge-soft-success badge-border">
+                                    Active
+                                  </span>
+                                </div>
+                              ) : (
+                                <div>
+                                  <span className="badge badge-soft-danger badge-border">
+                                    InActive
+                                  </span>
+                                </div>
+                              )}
+                            </td>
 
-                          <td>
-                            <button
-                              className="btn btn-sm btn-soft-info edit-list mx-1"
-                              onClick={() => handleEdit(item)
-                          
-                                
-                              }
-
-                            >
-                              <i className="ri-pencil-fill align-bottom" />
-                            </button>
-                            <button
-                              className="btn btn-sm btn-soft-danger remove-list"
-                              onClick={() => handleDelete(item)}
-                            >
-                              <i className="ri-delete-bin-5-fill align-bottom" />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                            <td>
+                              <button
+                                className="btn btn-sm btn-soft-info edit-list mx-1"
+                                onClick={() => handleEdit(item)}
+                              >
+                                <i className="ri-pencil-fill align-bottom" />
+                              </button>
+                              <button
+                                className="btn btn-sm btn-soft-danger remove-list"
+                                onClick={() => handleDelete(item)}
+                              >
+                                <i className="ri-delete-bin-5-fill align-bottom" />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
                     <Pagination>
                       <PaginationItem>
                         <PaginationLink
@@ -371,7 +373,8 @@ const SubSubCategoryMaster = () => {
             initialValues={{
               name: (recordForSubmit && recordForSubmit.name) || "",
               Category: (recordForSubmit && recordForSubmit.Category) || "",
-              SubCategory: (recordForSubmit && recordForSubmit.SubCategory) ||"",
+              SubCategory:
+                (recordForSubmit && recordForSubmit.SubCategory) || "",
               isActive: (recordForSubmit && recordForSubmit.isActive) || true,
             }}
             validationSchema={categoryValidation}
