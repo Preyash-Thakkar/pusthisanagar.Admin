@@ -9,7 +9,6 @@ import { Formik } from "formik";
 import axios from "axios";
 const baseUrl = process.env.REACT_APP_BASE_URL;
 
-
 const AddStocks = ({ refreshTable, StockForUpdate, setStockForUpdate }) => {
   const { getProducts } = useContext(SignContext);
   const [Product, setProduct] = useState([]);
@@ -19,21 +18,28 @@ const AddStocks = ({ refreshTable, StockForUpdate, setStockForUpdate }) => {
   const handleSavedStocks = async (values) => {
     try {
       let res;
-    
+
       if (StockForUpdate) {
-        res = await axios.put(`${baseUrl}/stocks/updatestock/${StockForUpdate._id}`, values);
+        res = await axios.put(
+          `${baseUrl}/stocks/updatestock/${StockForUpdate._id}`,
+          values
+        );
         if (res.data && res.data.success) {
-          setStocks(stocks.map(stock => stock._id === StockForUpdate._id ? res.data.updatedStock : stock));
+          setStocks(
+            stocks.map((stock) =>
+              stock._id === StockForUpdate._id ? res.data.updatedStock : stock
+            )
+          );
           refreshTable();
         }
-        console.log("whats the 1 ",res);
+        console.log("whats the 1 ", res);
       } else {
         res = await axios.post(`${baseUrl}/stocks/createstock`, values);
         if (res.data && res.data.success) {
           setStocks([...stocks, res.data.newStock]);
           refreshTable();
         }
-        console.log("whats the 2 ",res);
+        console.log("whats the 2 ", res);
       }
 
       if (res) {
@@ -41,9 +47,11 @@ const AddStocks = ({ refreshTable, StockForUpdate, setStockForUpdate }) => {
         setStockForUpdate(null);
         fetchData();
         refreshTable();
-
       } else {
-        console.error("Error in stock operation:", res.data && res.data.error ? res.data.error : "Unknown error");
+        console.error(
+          "Error in stock operation:",
+          res.data && res.data.error ? res.data.error : "Unknown error"
+        );
       }
     } catch (error) {
       console.error("Error:", error);
@@ -99,7 +107,9 @@ const AddStocks = ({ refreshTable, StockForUpdate, setStockForUpdate }) => {
         ProductId: StockForUpdate?.ProductId || "",
         quantity: StockForUpdate?.quantity || "",
         currentPricePerUnit: StockForUpdate?.currentPricePerUnit || "",
-        date: StockForUpdate?.date ? new Date(StockForUpdate.date.split("T")[0]) : null,
+        date: StockForUpdate?.date
+          ? new Date(StockForUpdate.date.split("T")[0])
+          : null,
       }}
       validationSchema={validationSchema}
       onSubmit={async (values, { resetForm, setSubmitting }) => {
@@ -125,7 +135,9 @@ const AddStocks = ({ refreshTable, StockForUpdate, setStockForUpdate }) => {
               </Label>
               <Select
                 value={Product.find((p) => p.value === values.ProductId)}
-                onChange={(selectedOption) => setFieldValue("ProductId", selectedOption?.value)}
+                onChange={(selectedOption) =>
+                  setFieldValue("ProductId", selectedOption?.value)
+                }
                 options={Product}
               />
             </Col>
@@ -155,7 +167,7 @@ const AddStocks = ({ refreshTable, StockForUpdate, setStockForUpdate }) => {
                 value={values.currentPricePerUnit}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                readOnly
+                // readOnly={!!values.currentPricePerUnit}
               />
             </Col>
             <Col lg={2}>

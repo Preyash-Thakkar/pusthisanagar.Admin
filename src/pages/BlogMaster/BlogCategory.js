@@ -316,7 +316,6 @@ const BlogCategory = () => {
               await handleSaveUserData(values);
               resetForm();
               togglemodal();
-              toast.success("Category Added Successfully", { autoClose: 3000 });
             }}
           >
             {({
