@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import Select from 'react-select';
+import Select from "react-select";
 import JoditEditor from "jodit-react";
 import {
   Card,
@@ -69,8 +69,6 @@ const AddProduct = () => {
   const [Colors, setColors] = useState([]);
 
   const { id } = useParams();
-
-  
 
   const handleFocus = (e) => {
     // Disable the mouse wheel for the number input
@@ -141,10 +139,10 @@ const AddProduct = () => {
         },
       });
       const colorRes = await getColors();
-      console.log(colorRes)
+      console.log(colorRes);
       setColors(colorRes.colors);
       const sizeRes = await getSize();
-      console.log(sizeRes)
+      console.log(sizeRes);
       setSizes(sizeRes.sizes);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -169,17 +167,21 @@ const AddProduct = () => {
     const fetchData = async () => {
       try {
         // Fetch all products from the backend
-        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/product/getallproducts`);
+        const response = await axios.post(
+          `${process.env.REACT_APP_BASE_URL}/product/getallproducts`
+        );
         console.log("preyash", response);
-  
+
         const allProducts = response.products;
         console.log("Test", allProducts);
-  
+
         // Filter products with isVariant: true
-        const variations = allProducts.filter(products => products.OtherVariations);
-  
+        const variations = allProducts.filter(
+          (products) => products.OtherVariations
+        );
+
         // Extract names from variations and set in the state
-        const variationNames = variations.map(variation => ({
+        const variationNames = variations.map((variation) => ({
           label: variation.name,
           value: variation._id,
         }));
@@ -188,9 +190,9 @@ const AddProduct = () => {
         console.error(error);
       }
     };
-  
+
     fetchData();
-  
+
     // Your existing code
     if (
       GstData.length === 0 ||
@@ -221,7 +223,6 @@ const AddProduct = () => {
       });
     }
   }, []);
-  
 
   const productForm = useFormik({
     enableReinitialize: true,
@@ -257,15 +258,17 @@ const AddProduct = () => {
     },
 
     validationSchema: Yup.object({
-      // name: Yup.string().required("required"),
-      // original: Yup.number().typeError("Must be a number").required("required"),
+      name: Yup.string().required("required"),
+      original: Yup.number().typeError("Must be a number").required("required"),
       // stock: Yup.number().typeError("Must be a number").required("required"),
       // discounted: Yup.number()
       //   .typeError("Must be a number")
       //   .required("required"),
-      // sku: Yup.string().required("required"),
-      // category: Yup.string().required("required"),
-      // subCategory: Yup.string().required("required"),
+
+      hsnCode: Yup.string().required("required"),
+      sku: Yup.string().required("required"),
+      category: Yup.string().required("required"),
+      subCategory: Yup.string().required("required"),
       // description: Yup.string().required("required"),
     }),
     onSubmit: async (values, { setSubmitting }) => {
@@ -296,7 +299,10 @@ const AddProduct = () => {
         formData.append(`OtherVariations[${index}]`, item.value);
       });
 
-      console.log(values.OtherVariations.map((item)=>item.value), "____________>>>")
+      console.log(
+        values.OtherVariations.map((item) => item.value),
+        "____________>>>"
+      );
       for (let i = 0; i < selectedTags.length; i++) {
         formData.append("tags", selectedTags[i]);
       }
@@ -334,9 +340,9 @@ const AddProduct = () => {
     },
   });
 
-  console.log(productForm)
+  console.log(productForm);
   const [otherVariations, setOtherVariations] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [filteredVariations, setFilteredVariations] = useState(otherVariations);
   const handleSearch = (e) => {
     const term = e.target.value.toLowerCase();
@@ -634,7 +640,6 @@ const AddProduct = () => {
                             <Input
                               placeholder="Enter price"
                               type="number"
-                              
                               onFocus={handleFocus}
                               id="price"
                               name="original"
@@ -676,7 +681,6 @@ const AddProduct = () => {
                             <Input
                               placeholder="Enter price"
                               type="number"
-                              
                               onFocus={handleFocus}
                               id="price"
                               name="discounted"
@@ -726,7 +730,6 @@ const AddProduct = () => {
                                 numeral: true,
                                 numeralThousandsGroupStyle: "thousand",
                               }}
-                              
                               onFocus={handleFocus}
                               id="price"
                               name="weight"
@@ -772,7 +775,6 @@ const AddProduct = () => {
                                 numeral: true,
                                 numeralThousandsGroupStyle: "thousand",
                               }}
-                              
                               onFocus={handleFocus}
                               id="laborCost"
                               name="laborCost"
@@ -818,7 +820,6 @@ const AddProduct = () => {
                                 numeral: true,
                                 numeralThousandsGroupStyle: "thousand",
                               }}
-                              
                               onFocus={handleFocus}
                               id="price"
                               name="discountOnLaborCost"
@@ -955,9 +956,9 @@ const AddProduct = () => {
                     </div>
                   </Col>
                   <div>
-      {/* OtherVariations dropdown */}
-      <label htmlFor="OtherVariations">Other Variants</label>
-{/* <Select
+                    {/* OtherVariations dropdown */}
+                    <label htmlFor="OtherVariations">Other Variants</label>
+                    {/* <Select
   id="OtherVariations"
   name="OtherVariations"
   value={productForm.values.OtherVariations || []}  // Ensure it's an array
@@ -969,25 +970,27 @@ const AddProduct = () => {
   isMulti  // Enable multi-select
   placeholder="--select--"
 /> */}
-<Select
-  id="OtherVariations"
-  name="OtherVariations"
-  value={productForm.values.OtherVariations || []}
-  onChange={(formVAlues) => {
-    productForm.setFieldValue("OtherVariations", formVAlues)
+                    <Select
+                      id="OtherVariations"
+                      name="OtherVariations"
+                      value={productForm.values.OtherVariations || []}
+                      onChange={(formVAlues) => {
+                        productForm.setFieldValue(
+                          "OtherVariations",
+                          formVAlues
+                        );
 
-    console.log("form values 123",formVAlues.value);
-  }}
-  options={otherVariations.map((variation) => ({ value: variation.value, label: variation.label }))}
-  
-  isSearchable
-  isMulti
-  placeholder="--select--"
-/>
-
-
-
-    </div>
+                        console.log("form values 123", formVAlues.value);
+                      }}
+                      options={otherVariations.map((variation) => ({
+                        value: variation.value,
+                        label: variation.label,
+                      }))}
+                      isSearchable
+                      isMulti
+                      placeholder="--select--"
+                    />
+                  </div>
                 </Row>
               </Col>
               <Col sm={4}>
@@ -1007,9 +1010,10 @@ const AddProduct = () => {
                   id="description"
                   name="description"
                   value={productForm.values.description}
-                  onChange={(product) =>
-                    productForm.setFieldValue("description", product)
-                  }
+                  onChange={(product) => {
+                    productForm.setFieldValue("description", product);
+                    productForm.setFieldTouched("description", true); // Manually mark the field as touched
+                  }}
                   onBlur={productForm.handleBlur}
                   invalid={
                     productForm.errors.description &&
@@ -1018,6 +1022,7 @@ const AddProduct = () => {
                       : false
                   }
                 />
+
                 {productForm.errors.description &&
                 productForm.touched.description ? (
                   <FormFeedback type="invalid">
@@ -1049,72 +1054,76 @@ const AddProduct = () => {
               ></Filters>
             </Col>
 
-           {formVAlues?formVAlues.isVariant && <Row className="g-3">
-              <Col sm={4}>
-                <div className="mb-3">
-                  <label className="form-label" htmlFor="ProductColor">
-                    Colors
-                  </label>
-                  <select
-                    className="form-select"
-                    id="ProductColor"
-                    name="productColor"
-                    aria-label="ProductColor"
-                    onBlur={productForm.handleBlur}
-                    value={productForm.values.productColor || ""}
-                    onChange={(e) => {
-                      productForm.handleChange(e);
-                    }}
-                  >
-                    <option value={null}>--select--</option>
-                    {Colors
-                      ? Colors.map((color) => (
-                          <option key={color._id} value={color.name}>
-                            {color.name}
-                          </option>
-                        ))
-                      : null}
-                  </select>
-                  {productForm.touched.gst && productForm.errors.gst ? (
-                    <FormFeedback type="invalid">
-                      {productForm.errors.gst}
-                    </FormFeedback>
-                  ) : null}
-                </div>
-              </Col>
-              <Col sm={4}>
-                <div className="mb-3">
-                  <label className="form-label" htmlFor="ProductColor">
-                    Size
-                  </label>
-                  <select
-                    className="form-select"
-                    id="ProductColor"
-                    name="productSize"
-                    aria-label="ProductColor"
-                    onBlur={productForm.handleBlur}
-                    value={productForm.values.productSize || ""}
-                    onChange={(e) => {
-                      productForm.handleChange(e);
-                    }}
-                  >
-                    <option value={null}>--select--</option>
-                    {Sizes
-                      ? Sizes.map((size) => (
-                          <option key={size._id} value={size.size}>
-                            {size.size}
-                          </option>
-                        ))
-                      : null}
-                  </select>
-                  {productForm.touched.gst && productForm.errors.gst ? (
-                    <FormFeedback type="invalid">
-                      {productForm.errors.gst}
-                    </FormFeedback>
-                  ) : null}
-                </div>
-              </Col>
-              </Row>: null}
+            {formVAlues
+              ? formVAlues.isVariant && (
+                  <Row className="g-3">
+                    <Col sm={4}>
+                      <div className="mb-3">
+                        <label className="form-label" htmlFor="ProductColor">
+                          Colors
+                        </label>
+                        <select
+                          className="form-select"
+                          id="ProductColor"
+                          name="productColor"
+                          aria-label="ProductColor"
+                          onBlur={productForm.handleBlur}
+                          value={productForm.values.productColor || ""}
+                          onChange={(e) => {
+                            productForm.handleChange(e);
+                          }}
+                        >
+                          <option value={null}>--select--</option>
+                          {Colors
+                            ? Colors.map((color) => (
+                                <option key={color._id} value={color.name}>
+                                  {color.name}
+                                </option>
+                              ))
+                            : null}
+                        </select>
+                        {productForm.touched.gst && productForm.errors.gst ? (
+                          <FormFeedback type="invalid">
+                            {productForm.errors.gst}
+                          </FormFeedback>
+                        ) : null}
+                      </div>
+                    </Col>
+                    <Col sm={4}>
+                      <div className="mb-3">
+                        <label className="form-label" htmlFor="ProductColor">
+                          Size
+                        </label>
+                        <select
+                          className="form-select"
+                          id="ProductColor"
+                          name="productSize"
+                          aria-label="ProductColor"
+                          onBlur={productForm.handleBlur}
+                          value={productForm.values.productSize || ""}
+                          onChange={(e) => {
+                            productForm.handleChange(e);
+                          }}
+                        >
+                          <option value={null}>--select--</option>
+                          {Sizes
+                            ? Sizes.map((size) => (
+                                <option key={size._id} value={size.size}>
+                                  {size.size}
+                                </option>
+                              ))
+                            : null}
+                        </select>
+                        {productForm.touched.gst && productForm.errors.gst ? (
+                          <FormFeedback type="invalid">
+                            {productForm.errors.gst}
+                          </FormFeedback>
+                        ) : null}
+                      </div>
+                    </Col>
+                  </Row>
+                )
+              : null}
 
             <Col className="d-flex justify-content-center">
               <div className="m-4 form-check">
