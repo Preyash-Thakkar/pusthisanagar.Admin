@@ -294,7 +294,7 @@ const AddProduct = () => {
       formData.append("gst", values.gst);
       formData.append("hsnCode", values.hsnCode);
       formData.append("productColor", values.productColor);
-      formData.append("productSize", values.productSize);
+      // formData.append("productSize", values.productSize);
 
       values.OtherVariations?.forEach((item, index) => {
         if (item && item.value !== undefined) {
@@ -321,7 +321,7 @@ const AddProduct = () => {
       formData.append("color", selectedcolors);
       formData.append("material", selectedmaterials);
       formData.append("season", selectedseasons);
-      formData.append("size", selectedSize);
+      formData.append("productSize", selectedSize);
       for (let i = 0; i < selectedImages.length; i++) {
         formData.append("imageGallery", selectedImages[i]);
       }
