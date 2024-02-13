@@ -1,21 +1,25 @@
 import React, { useEffect } from "react";
-import { Col, Label, Row ,Input} from "reactstrap";
+import { Col, Label, Row, Input } from "reactstrap";
 import Select from "react-select";
 import { useDispatch, useSelector } from "react-redux";
-import { getColor, getMaterial, getSeason } from "../../helpers/backend_helper";
+import {
+  getColor,
+  getMaterial,
+  getSeason,
+  getSize,
+} from "../../helpers/backend_helper";
 import {
   GET_COLOR,
   GET_MATERIAL,
   GET_SEASON,
+  GET_SIZE,
 } from "../../store/product/actionTypes";
 
 const Filters = (props) => {
   const colorsData = useSelector((state) => state.Product.colors);
   const seasonsData = useSelector((state) => state.Product.seasons);
   const materialsData = useSelector((state) => state.Product.materials);
-
-
-  
+  const sizesData = useSelector((state) => state.Product.sizes);
 
   const dispatch = useDispatch();
   const fetchDropdownData = async () => {
@@ -45,6 +49,15 @@ const Filters = (props) => {
           data: materialRes.material,
         },
       });
+
+      const sizeRes = await getSize();
+      dispatch({
+        type: GET_SIZE,
+        payload: {
+          actionType: "GET_SIZE",
+          data: sizeRes.sizes,
+        },
+      });
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -53,15 +66,16 @@ const Filters = (props) => {
   const handleFilterChange = (selectedMulti2) => {
     props.setselectedFilters(selectedMulti2);
     props.setselectedItems(selectedMulti2.map((i) => i.value));
-  }
-  console.log(props,"____________props")
+  };
+  console.log(props, "____________props");
 
   useEffect(() => {
-    console.log(props,"____________props")
+    console.log(props, "____________props");
     if (
       colorsData.length === 0 ||
       seasonsData.length === 0 ||
-      materialsData === 0
+      materialsData === 0 ||
+      sizesData === 0
     ) {
       fetchDropdownData();
     }
@@ -74,7 +88,7 @@ const Filters = (props) => {
           <div className="mb-3">
             <label
               htmlFor="choices-multiple-remove-button"
-              className="form-label" 
+              className="form-label"
             >
               filter by
             </label>
@@ -83,14 +97,13 @@ const Filters = (props) => {
               isMulti={true}
               isClearable={true}
               onChange={(selectedMulti2) => {
-                handleFilterChange(selectedMulti2)
-               
+                handleFilterChange(selectedMulti2);
               }}
               options={[
                 { value: "Color", label: "Color" },
                 { value: "Material", label: "Material" },
                 { value: "Season", label: "Season" },
-                // { value: "productSize", label: "product size" },
+                { value: "productSize", label: "Size" },
               ]}
             />
           </div>
@@ -107,7 +120,7 @@ const Filters = (props) => {
                 id="color"
                 name="color"
                 aria-label="color"
-                value={props.selectedcolors || ''}
+                value={props.selectedcolors || ""}
                 onChange={(e) => {
                   props.setSelectedcolors(e.target.value);
                 }}
@@ -137,7 +150,7 @@ const Filters = (props) => {
                 id="material"
                 name="material"
                 aria-label="material"
-                value={props.selectedmaterials || ''}
+                value={props.selectedmaterials || ""}
                 onChange={(e) => {
                   props.setSelectedmaterials(e.target.value);
                 }}
@@ -166,7 +179,7 @@ const Filters = (props) => {
                 className="form-select"
                 id="season"
                 name="season"
-                value={props.selectedseasons || ''}
+                value={props.selectedseasons || ""}
                 aria-label="season"
                 onChange={(e) => {
                   props.setSelectedseasons(e.target.value);
@@ -186,33 +199,34 @@ const Filters = (props) => {
           </Col>
         ) : null}
 
-{/* {props.selectedItems.includes("productSize") ? (
-        <Col sm={2}>
-          <div className="mb-3">
-            <label className="form-label" htmlFor="product-orders-input">
-              product size in CM
-            </label>
-            <div className="input-group mb-3">
-              <Input
-                type="text"
-                className="form-control"
-                id="productSize"
-                placeholder="Enter size"
-                name="productSize"
-                aria-label="productSize"
-                aria-describedby="product-orders-addon"
-                value={props.productSize}
+        {props.selectedItems.includes("productSize") ? (
+          <Col sm={2}>
+            <div className="mb-3">
+              <label className="form-label" htmlFor="size">
+                product size in CM
+              </label>
+              <select
+                className="form-select"
+                id="size"
+                name="size"
+                value={props.selectedSize || ""}
+                aria-label="size"
                 onChange={(e) => {
-                  props.setProductSize(e.target.value);
+                  props.setSelectedSize(e.target.value);
                 }}
-               
-              />
-              
+              >
+                <option value={null}>Select size</option>
+                {sizesData
+                  ? sizesData.map((category) => (
+                      <option key={category._id} value={category.size}>
+                        {category.size}
+                      </option>
+                    ))
+                  : null}
+              </select>
             </div>
-          </div>
-        </Col>
-) : null} */}
-
+          </Col>
+        ) : null}
       </Row>
     </React.Fragment>
   );

@@ -61,6 +61,8 @@ const AddProduct = () => {
   const [selectedFilters, setselectedFilters] = useState([]);
   const [selectedItems, setselectedItems] = useState([]);
   const [selectedcolors, setSelectedcolors] = useState([]);
+  const [selectedSize, setSelectedSize] = useState([]);
+
   const [selectedseasons, setSelectedseasons] = useState([]);
   const [selectedmaterials, setSelectedmaterials] = useState([]);
   const [productForUpdate, setProductForUpdate] = useState([]);
@@ -143,7 +145,7 @@ const AddProduct = () => {
       setColors(colorRes.colors);
       const sizeRes = await getSize();
       console.log(sizeRes);
-      setSizes(sizeRes.sizes);
+      setSizes(sizeRes);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -218,6 +220,7 @@ const AddProduct = () => {
         setselectedFilters(filters);
         setselectedItems(pfu.product.filters);
         setSelectedcolors(pfu.product.productColor);
+        setSelectedSize(pfu.product.productSize);
         setSelectedseasons(pfu.product.season);
         setSelectedmaterials(pfu.product.material);
       });
@@ -252,7 +255,7 @@ const AddProduct = () => {
       gst: (formVAlues && formVAlues.gst) || "",
       hsnCode: (formVAlues && formVAlues.hsnCode) || "",
       //productColor: (formVAlues && formVAlues.productColor) || "",
-      productSize: (formVAlues && formVAlues.productSize) || "",
+      // productSize: (formVAlues && formVAlues.productSize) || "",
       OtherVariations: (formVAlues && formVAlues.OtherVariations) || [],
       OtherVariationIds: (formVAlues && formVAlues.OtherVariationIds) || [],
     },
@@ -293,11 +296,18 @@ const AddProduct = () => {
       formData.append("gst", values.gst);
       formData.append("hsnCode", values.hsnCode);
       //formData.append("productColor", values.productColor);
-      formData.append("productSize", values.productSize);
+      // formData.append("productSize", values.productSize);
+      console.log("OtherVariations before processing:", values.OtherVariations);
 
-      values.OtherVariations.forEach((item, index) => {
-        formData.append(`OtherVariations[${index}]`, item.value);
+      values.OtherVariations?.forEach((id, index) => {
+        if (id) { // Check if the ID is not null or undefined
+          formData.append(`OtherVariations[${index}]`, id);
+          console.log(`Successful ID at index ${index} in OtherVariations: ${id}`);
+        } else {
+          console.log(`Invalid ID at index ${index} in OtherVariations`);
+        }
       });
+      
 
       console.log(
         values.OtherVariations.map((item) => item.value),
@@ -315,7 +325,7 @@ const AddProduct = () => {
       formData.append("productColor", selectedcolors);
       formData.append("material", selectedmaterials);
       formData.append("season", selectedseasons);
-      formData.append("size", values.size);
+      formData.append("productSize", selectedSize);
       for (let i = 0; i < selectedImages.length; i++) {
         formData.append("imageGallery", selectedImages[i]);
       }
@@ -973,19 +983,31 @@ const AddProduct = () => {
                     <Select
                       id="OtherVariations"
                       name="OtherVariations"
-                      value={productForm.values.OtherVariations || []}
-                      onChange={(formVAlues) => {
-                        productForm.setFieldValue(
-                          "OtherVariations",
-                          formVAlues
+                      // Adjusting the value prop to correctly map from productForm.values.OtherVariations
+                      value={productForm.values.OtherVariations.map(
+                        (selectedId) => {
+                          return (
+                            otherVariations.find(
+                              (variation) => variation.value === selectedId
+                            ) || null
+                          );
+                        }
+                      ).filter(Boolean)} // Ensuring all non-null values are retained
+                      onChange={(selectedOptions) => {
+                        // Updating productForm with the new selection
+                        const newValues = selectedOptions.map(
+                          (option) => option.value
                         );
+                        console.log("New values", newValues);
+                        productForm.setFieldValue("OtherVariations", newValues);
 
-                        console.log("form values 123", formVAlues.value);
+                        console.log("Selected Variations:", selectedOptions);
+                        console.log(
+                          "Updated OtherVariations in productForm:",
+                          productForm.values.OtherVariations
+                        );
                       }}
-                      options={otherVariations.map((variation) => ({
-                        value: variation.value,
-                        label: variation.label,
-                      }))}
+                      options={otherVariations}
                       isSearchable
                       isMulti
                       placeholder="--select--"
@@ -1049,8 +1071,10 @@ const AddProduct = () => {
                 selectedItems={selectedItems}
                 setselectedFilters={setselectedFilters}
                 setselectedItems={setselectedItems}
-                productSize={productSize}
-                setProductSize={setProductSize}
+                // productSize={productSize}
+                // setProductSize={setProductSize}
+                setSelectedSize={setSelectedSize}
+                selectedSize={selectedSize}
               ></Filters>
             </Col>
 
@@ -1076,7 +1100,10 @@ const AddProduct = () => {
                           <option value={null}>--select--</option>
                           {Colors
                             ? Colors.map((productColor) => (
-                                <option key={productColor._id} value={productColor.name}>
+                                <option
+                                  key={productColor._id}
+                                  value={productColor.name}
+                                >
                                   {productColor.name}
                                 </option>
                               ))
@@ -1096,9 +1123,9 @@ const AddProduct = () => {
                         </label>
                         <select
                           className="form-select"
-                          id="ProductColor"
+                          id="productSize"
                           name="productSize"
-                          aria-label="ProductColor"
+                          aria-label="productSize"
                           onBlur={productForm.handleBlur}
                           value={productForm.values.productSize || ""}
                           onChange={(e) => {
@@ -1189,7 +1216,12 @@ const AddProduct = () => {
                   </button>
                 </React.Fragment>
               ) : (
-                <Button productColor="primary" className="btn-load" outline disabled>
+                <Button
+                  productColor="primary"
+                  className="btn-load"
+                  outline
+                  disabled
+                >
                   <span className="d-flex align-items-center">
                     <Spinner size="sm" className="flex-shrink-0">
                       {" "}
