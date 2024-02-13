@@ -217,7 +217,7 @@ const AddProduct = () => {
         setSelectedTags(pfu.product.tags);
         setselectedFilters(filters);
         setselectedItems(pfu.product.filters);
-        setSelectedcolors(pfu.product.color);
+        setSelectedcolors(pfu.product.productColor);
         setSelectedseasons(pfu.product.season);
         setSelectedmaterials(pfu.product.material);
       });
@@ -251,7 +251,7 @@ const AddProduct = () => {
       size: (formVAlues && formVAlues.size) || "",
       gst: (formVAlues && formVAlues.gst) || "",
       hsnCode: (formVAlues && formVAlues.hsnCode) || "",
-      productColor: (formVAlues && formVAlues.productColor) || "",
+      //productColor: (formVAlues && formVAlues.productColor) || "",
       productSize: (formVAlues && formVAlues.productSize) || "",
       OtherVariations: (formVAlues && formVAlues.OtherVariations) || [],
       OtherVariationIds: (formVAlues && formVAlues.OtherVariationIds) || [],
@@ -292,7 +292,7 @@ const AddProduct = () => {
       formData.append("sku", values.sku);
       formData.append("gst", values.gst);
       formData.append("hsnCode", values.hsnCode);
-      formData.append("productColor", values.productColor);
+      //formData.append("productColor", values.productColor);
       formData.append("productSize", values.productSize);
 
       values.OtherVariations.forEach((item, index) => {
@@ -312,7 +312,7 @@ const AddProduct = () => {
         // formData.append("imageGallery", selectedImages[i]);
       }
 
-      formData.append("color", selectedcolors);
+      formData.append("productColor", selectedcolors);
       formData.append("material", selectedmaterials);
       formData.append("season", selectedseasons);
       formData.append("size", values.size);
@@ -1075,9 +1075,9 @@ const AddProduct = () => {
                         >
                           <option value={null}>--select--</option>
                           {Colors
-                            ? Colors.map((color) => (
-                                <option key={color._id} value={color.name}>
-                                  {color.name}
+                            ? Colors.map((productColor) => (
+                                <option key={productColor._id} value={productColor.name}>
+                                  {productColor.name}
                                 </option>
                               ))
                             : null}
@@ -1091,7 +1091,7 @@ const AddProduct = () => {
                     </Col>
                     <Col sm={4}>
                       <div className="mb-3">
-                        <label className="form-label" htmlFor="ProductColor">
+                        <label className="form-label" htmlFor="productSize">
                           Size
                         </label>
                         <select
@@ -1189,7 +1189,7 @@ const AddProduct = () => {
                   </button>
                 </React.Fragment>
               ) : (
-                <Button color="primary" className="btn-load" outline disabled>
+                <Button productColor="primary" className="btn-load" outline disabled>
                   <span className="d-flex align-items-center">
                     <Spinner size="sm" className="flex-shrink-0">
                       {" "}
