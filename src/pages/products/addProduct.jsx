@@ -295,13 +295,18 @@ const AddProduct = () => {
       formData.append("productColor", values.productColor);
       formData.append("productSize", values.productSize);
 
-      values.OtherVariations.forEach((item, index) => {
-        formData.append(`OtherVariations[${index}]`, item.value);
+      values.OtherVariations?.forEach((item, index) => {
+        if (item && item.value !== undefined) {
+          formData.append(`OtherVariations[${index}]`, item.value);
+          console.log(`Successful item at index ${index} in OtherVariations`);
+        } else {
+          console.log(`Invalid item at index ${index} in OtherVariations`);
+        }
       });
 
       console.log(
         values.OtherVariations.map((item) => item.value),
-        "____________>>>"
+        "____________>>>Other Variations"
       );
       for (let i = 0; i < selectedTags.length; i++) {
         formData.append("tags", selectedTags[i]);
@@ -973,13 +978,34 @@ const AddProduct = () => {
                     <Select
                       id="OtherVariations"
                       name="OtherVariations"
-                      value={productForm.values.OtherVariations || []}
+                      value={productForm.values.OtherVariations.map((id) => {
+                        const variation = otherVariations.find(
+                          (variation) => variation.value === id
+                        );
+                        return variation
+                          ? { value: variation.value, label: variation.label }
+                          : null;
+                      }).filter(Boolean)}
                       onChange={(formVAlues) => {
                         productForm.setFieldValue(
                           "OtherVariations",
                           formVAlues
                         );
-
+                        console.log("My ov's", otherVariations);
+                        console.log(
+                          "productForm.values.OtherVariations:",
+                          productForm.values.OtherVariations
+                        );
+                        const mappedValues = (
+                          productForm.values.OtherVariations || []
+                        ).map((id) => ({
+                          value: id,
+                          label:
+                            otherVariations.find(
+                              (variation) => variation.value === id
+                            )?.label || id,
+                        }));
+                        console.log("mappedValues:", mappedValues);
                         console.log("form values 123", formVAlues.value);
                       }}
                       options={otherVariations.map((variation) => ({

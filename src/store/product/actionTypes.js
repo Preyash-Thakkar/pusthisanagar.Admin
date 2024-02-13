@@ -19,5 +19,7 @@ export const GET_SEASON = "GET_SEASON"
 export const GET_MATERIAL = "GET_MATERIAL"
 export const GET_DAILY_PRICE = "GET_DAILY_PRICE"
 
+export const GET_SIZE = "GET_SIZE"
+
 
 
