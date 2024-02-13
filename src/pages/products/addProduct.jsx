@@ -67,7 +67,7 @@ const AddProduct = () => {
   const [productSize, setProductSize] = useState([]);
   const [Sizes, setSizes] = useState([]);
   const [Colors, setColors] = useState([]);
-
+  const [selectedSize, setSelectedSize] = useState([]);
   const { id } = useParams();
 
   const handleFocus = (e) => {
@@ -143,7 +143,7 @@ const AddProduct = () => {
       setColors(colorRes.colors);
       const sizeRes = await getSize();
       console.log(sizeRes);
-      setSizes(sizeRes.sizes);
+      setSizes(sizeRes);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -220,6 +220,7 @@ const AddProduct = () => {
         setSelectedcolors(pfu.product.productColor);
         setSelectedseasons(pfu.product.season);
         setSelectedmaterials(pfu.product.material);
+        setSelectedSize(pfu.product.productSize)
       });
     }
   }, []);
@@ -320,7 +321,7 @@ const AddProduct = () => {
       formData.append("productColor", selectedcolors);
       formData.append("material", selectedmaterials);
       formData.append("season", selectedseasons);
-      formData.append("size", values.size);
+      formData.append("size", selectedSize);
       for (let i = 0; i < selectedImages.length; i++) {
         formData.append("imageGallery", selectedImages[i]);
       }
@@ -1075,8 +1076,10 @@ const AddProduct = () => {
                 selectedItems={selectedItems}
                 setselectedFilters={setselectedFilters}
                 setselectedItems={setselectedItems}
-                productSize={productSize}
-                setProductSize={setProductSize}
+                // productSize={productSize}
+                // setProductSize={setProductSize}
+                setSelectedSize={setSelectedSize}
+                selectedSize={selectedSize}
               ></Filters>
             </Col>
 
@@ -1122,9 +1125,9 @@ const AddProduct = () => {
                         </label>
                         <select
                           className="form-select"
-                          id="ProductColor"
+                          id="productSize"
                           name="productSize"
-                          aria-label="ProductColor"
+                          aria-label="productSize"
                           onBlur={productForm.handleBlur}
                           value={productForm.values.productSize || ""}
                           onChange={(e) => {
@@ -1133,9 +1136,9 @@ const AddProduct = () => {
                         >
                           <option value={null}>--select--</option>
                           {Sizes
-                            ? Sizes.map((size) => (
-                                <option key={size._id} value={size.size}>
-                                  {size.size}
+                            ? Sizes.map((productSize) => (
+                                <option key={productSize._id} value={productSize.size}>
+                                  {productSize.size}
                                 </option>
                               ))
                             : null}
