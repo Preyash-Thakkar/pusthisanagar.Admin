@@ -8,6 +8,7 @@ import {
   GET_SEASON,
   GET_MATERIAL,
   GET_DAILY_PRICE,
+  GET_SIZE
 } from "./actionTypes";
 
 const INIT_STATE = {
@@ -19,7 +20,8 @@ const INIT_STATE = {
   colors:[],
   seasons:[],
   materials:[],
-  DailyPrices:[]
+  DailyPrices:[],
+  sizes:[]
 };
 
 const Product = (state = INIT_STATE, action) => {
@@ -73,6 +75,12 @@ const Product = (state = INIT_STATE, action) => {
         ...state,
         DailyPrices: action.payload.data,
       };
+      case GET_SIZE:
+      return {
+        ...state,
+        sizes: action.payload.data,
+      };
+
     default:
       return state;
   }
