@@ -63,10 +63,40 @@ const Filters = (props) => {
     }
   };
 
-  const handleFilterChange = (selectedMulti2) => {
-    props.setselectedFilters(selectedMulti2);
-    props.setselectedItems(selectedMulti2.map((i) => i.value));
-  };
+  const handleFilterChange = (selectedOptions) => {
+    props.setSelectedFilters(selectedOptions || []);
+
+    const selectedValues = selectedOptions ? selectedOptions.map(option => option.value) : [];
+    props.setSelectedItems(selectedValues);
+
+    const allFilters = ['Color', 'Material', 'Season', 'productSize'];
+
+    allFilters.forEach(filter => {
+        if (!selectedValues.includes(filter)) {
+            switch (filter) {
+                case 'Color':
+                    props.setSelectedcolors(""); // Reset to default state
+                    break;
+                case 'Material':
+                    props.setSelectedmaterials(""); // Reset to default state
+                    break;
+                case 'Season':
+                    props.setSelectedseasons(""); // Reset to default state
+                    break;
+                case 'productSize':
+                    props.setSelectedSize(""); // Reset to default state
+                    break;
+                default:
+                    break;
+            }
+        }
+    });
+};
+
+
+  
+  
+  
   console.log(props, "____________props");
 
   useEffect(() => {
@@ -79,7 +109,7 @@ const Filters = (props) => {
     ) {
       fetchDropdownData();
     }
-  }, [props.selectedItems]);
+  }, [props.selectedItems,props.selectedFilters]);
 
   return (
     <React.Fragment>
