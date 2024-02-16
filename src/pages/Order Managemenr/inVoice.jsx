@@ -221,7 +221,7 @@ const InvoiceDetails = () => {
                           Payment Status
                         </p>
                         <span className="status" id="payment-status">
-                          {OrderData.paymentMethod}
+                          {OrderData.status}
                         </span>
                       </Col>
                       <Col lg={3} xs={6}>
@@ -275,7 +275,7 @@ const InvoiceDetails = () => {
                         <p className="mb-1">
                           <span>Phone: +(91) </span>
                           <span id="shipping-phone-no">
-                            {CustomerInfo.phone}
+                            {OrderData.phone}
                           </span>
                         </p>
                       </Col>
