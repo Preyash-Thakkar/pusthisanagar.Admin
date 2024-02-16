@@ -335,6 +335,7 @@ const CategoryMaster = () => {
                     onSubmit={(e) => {
                       e.preventDefault();
                       categoryForm.handleSubmit();
+                      window.location.reload();
                       return false;
                     }}
                   >
@@ -347,6 +348,7 @@ const CategoryMaster = () => {
                           maxFiles={3}
                           name="files"
                           className="filepond filepond-input-multiple"
+                          accept=".jpg,.jpeg,.png"
                           allowFilePoster={true}
                         ></FilePond>
                         <img
@@ -484,9 +486,11 @@ const CategoryMaster = () => {
                           onClick={() => {
                             setShowModal(false);
                             setValuesForUpdate("");
+                            window.location.reload();
                           }}
                         >
                           Close
+                          
                         </button>
                       </div>
                     </div>
