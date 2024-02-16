@@ -266,7 +266,7 @@ const InvoiceDetails = () => {
                           Shipping Address
                         </h6>
                         <p className="fw-medium mb-2" id="shipping-name">
-                          {CustomerInfo.username}
+                          {OrderData.FirstName} {OrderData.LastName}
                         </p>
                         <p className="mb-1" id="shipping-address-line-1">
                           {OrderData.shippingAddress} <br />

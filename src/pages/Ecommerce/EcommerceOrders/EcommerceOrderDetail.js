@@ -50,7 +50,7 @@ const EcommerceOrderDetail = (props) => {
   const getSpecificCustomer = async (id) => {
     try {
       const res = await GetSpecificCustomer(id);
-      console.log(res);
+      console.log("specific response",res);
       if (res.success) {
         setCustomerInfo(res.customer);
       }
@@ -501,7 +501,7 @@ const EcommerceOrderDetail = (props) => {
                       </div> */}
                       <div className="flex-grow-1 ms-3">
                         <h6 className="fs-14 mb-1">
-                          {OrderData.FirstName} {OrderData.LastName}
+                          {CustomerInfo.username}
                         </h6>
                         <p className="text-muted mb-0">Customer</p>
                       </div>
@@ -549,7 +549,7 @@ const EcommerceOrderDetail = (props) => {
                   <li className="fw-medium fs-14">
                     {OrderData.FirstName} {OrderData.LastName}
                   </li>
-                  <li>+(91) {CustomerInfo.phone} </li>
+                  <li>+(91) {OrderData.phone} </li>
                   <li>{OrderData.shippingAddress}</li>
                   <li>
                     {OrderData.state} - {OrderData.postCode}

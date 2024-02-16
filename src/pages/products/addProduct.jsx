@@ -58,8 +58,8 @@ const AddProduct = () => {
   const [subSubCatDropbind, setSubSubCatDropbind] = useState([]);
   const [selectedImages, setSelectedImages] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
-  const [selectedFilters, setselectedFilters] = useState([]);
-  const [selectedItems, setselectedItems] = useState([]);
+  const [selectedFilters, setSelectedFilters] = useState([]);
+  const [selectedItems, setSelectedItems] = useState([]);
   const [selectedcolors, setSelectedcolors] = useState([]);
   const [selectedSize, setSelectedSize] = useState([]);
 
@@ -210,15 +210,15 @@ const AddProduct = () => {
     if (id) {
       getspecificproduct(id).then((pfu) => {
         setFormVAlues(pfu.product);
-        console.log(pfu);
+        console.log("My pfus", pfu);
         const filters = pfu.product.filters.map((value) => {
           return { value: value, label: value };
         });
         setShowSilverGoldDropdown(pfu.product.calculationOnWeight);
         setSelectedImages(pfu.product.imageGallery);
         setSelectedTags(pfu.product.tags);
-        setselectedFilters(filters);
-        setselectedItems(pfu.product.filters);
+        setSelectedFilters(filters);
+        setSelectedItems(pfu.product.filters);
         setSelectedcolors(pfu.product.productColor);
         setSelectedSize(pfu.product.productSize);
         setSelectedseasons(pfu.product.season);
@@ -254,8 +254,8 @@ const AddProduct = () => {
       size: (formVAlues && formVAlues.size) || "",
       gst: (formVAlues && formVAlues.gst) || "",
       hsnCode: (formVAlues && formVAlues.hsnCode) || "",
-      //productColor: (formVAlues && formVAlues.productColor) || "",
-      // productSize: (formVAlues && formVAlues.productSize) || "",
+      productColor: (formVAlues && formVAlues.productColor) || "",
+      productSize: (formVAlues && formVAlues.productSize) || "",
       OtherVariations: (formVAlues && formVAlues.OtherVariations) || [],
       OtherVariationIds: (formVAlues && formVAlues.OtherVariationIds) || [],
     },
@@ -298,16 +298,18 @@ const AddProduct = () => {
       //formData.append("productColor", values.productColor);
       // formData.append("productSize", values.productSize);
       console.log("OtherVariations before processing:", values.OtherVariations);
-
-      values.OtherVariations?.forEach((id, index) => {
-        if (id) { // Check if the ID is not null or undefined
-          formData.append(`OtherVariations[${index}]`, id);
-          console.log(`Successful ID at index ${index} in OtherVariations: ${id}`);
-        } else {
-          console.log(`Invalid ID at index ${index} in OtherVariations`);
-        }
-      });
-      
+      console.log("id", id);
+      console.log("OtherVariations before processing:", values.OtherVariations);
+      // Check if OtherVariations is not undefined and has length, append each; otherwise, append an empty array indication
+      if (values.OtherVariations && values.OtherVariations.length > 0) {
+        values.OtherVariations.forEach((id, index) => {
+            formData.append(`OtherVariations[${index}]`, id);
+        });
+    } else {
+        // Append a special marker to indicate an empty array
+        formData.append('OtherVariations', 'EMPTY');
+    }
+    
 
       console.log(
         values.OtherVariations.map((item) => item.value),
@@ -328,6 +330,10 @@ const AddProduct = () => {
       formData.append("productSize", selectedSize);
       for (let i = 0; i < selectedImages.length; i++) {
         formData.append("imageGallery", selectedImages[i]);
+      }
+
+      for (let [key, value] of formData.entries()) {
+        console.log("all key value", key, value);
       }
 
       try {
@@ -968,18 +974,7 @@ const AddProduct = () => {
                   <div>
                     {/* OtherVariations dropdown */}
                     <label htmlFor="OtherVariations">Other Variants</label>
-                    {/* <Select
-  id="OtherVariations"
-  name="OtherVariations"
-  value={productForm.values.OtherVariations || []}  // Ensure it's an array
-  onChange={(selectedOptions) => {
-    productForm.setFieldValue('OtherVariations', selectedOptions);
-  }}
-  options={otherVariations}
-  isSearchable
-  isMulti  // Enable multi-select
-  placeholder="--select--"
-/> */}
+
                     <Select
                       id="OtherVariations"
                       name="OtherVariations"
@@ -1069,8 +1064,8 @@ const AddProduct = () => {
                 setSelectedmaterials={setSelectedmaterials}
                 selectedFilters={selectedFilters}
                 selectedItems={selectedItems}
-                setselectedFilters={setselectedFilters}
-                setselectedItems={setselectedItems}
+                setSelectedFilters={setSelectedFilters}
+                setSelectedItems={setSelectedItems}
                 // productSize={productSize}
                 // setProductSize={setProductSize}
                 setSelectedSize={setSelectedSize}
@@ -1109,9 +1104,10 @@ const AddProduct = () => {
                               ))
                             : null}
                         </select>
-                        {productForm.touched.gst && productForm.errors.gst ? (
+                        {productForm.touched.productColor &&
+                        productForm.errors.productColor ? (
                           <FormFeedback type="invalid">
-                            {productForm.errors.gst}
+                            {productForm.errors.productColor}
                           </FormFeedback>
                         ) : null}
                       </div>
@@ -1141,9 +1137,10 @@ const AddProduct = () => {
                               ))
                             : null}
                         </select>
-                        {productForm.touched.gst && productForm.errors.gst ? (
+                        {productForm.touched.productSize &&
+                        productForm.errors.productSize ? (
                           <FormFeedback type="invalid">
-                            {productForm.errors.gst}
+                            {productForm.errors.productSize}
                           </FormFeedback>
                         ) : null}
                       </div>
