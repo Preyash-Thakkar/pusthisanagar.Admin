@@ -41,7 +41,6 @@ import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 // import "filepond-plugin-file-poster/dist/filepond-plugin-file-poster.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 
-
 // Register the plugins
 registerPlugin(
   FilePondPluginImageExifOrientation,
@@ -50,7 +49,6 @@ registerPlugin(
 );
 
 const ITEMS_PER_PAGE = 10;
-
 
 const CategoryMaster = () => {
   document.title = "Category Master";
@@ -68,7 +66,7 @@ const CategoryMaster = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [buttnLoading, setButtnLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  
+
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
   const currentItems = tableData.slice(indexOfFirstItem, indexOfLastItem);
@@ -78,6 +76,7 @@ const CategoryMaster = () => {
   const fetchData = async () => {
     try {
       const response = await getCategory();
+      console.log("response in get", response);
       setTableData(response);
       setAllTableData(response);
     } catch (error) {
@@ -86,11 +85,10 @@ const CategoryMaster = () => {
   };
 
   useEffect(() => {
-    if(tableData.length===0){
-
+    if (tableData.length === 0) {
       fetchData();
     }
-    setFiles([]);
+    // setFiles([]);
   }, []);
 
   const toggle = useCallback(() => {
@@ -132,7 +130,6 @@ const CategoryMaster = () => {
   const categoryValidation = Yup.object().shape({
     name: Yup.string().required("required"),
     // image: Yup.mixed().required("Photo is required"),
-   
   });
 
   const categoryForm = useFormik({
@@ -141,24 +138,25 @@ const CategoryMaster = () => {
       name: (valuesForUpdate && valuesForUpdate.name) || "",
       // noOfProducts: (valuesForUpdate && valuesForUpdate.noOfProducts) || "",
       description: (valuesForUpdate && valuesForUpdate.description) || "",
-      isActive: (valuesForUpdate && valuesForUpdate.isActive) || true,
+      isActive: (valuesForUpdate && valuesForUpdate.isActive) || false,
     },
     validationSchema: categoryValidation,
     onSubmit: async (values) => {
-      console.log(files[0].file);
+      // console.log(files[0].file);
       setSubmitted(true);
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("description", values.description);
       // formData.append("noOfProducts", values.noOfProducts);
       formData.append("isActive", values.isActive);
+      console.log("files length", files.length);
       if (files.length !== 0) {
         formData.append("image", files[0].file);
       }
       setButtnLoading(true);
       if (isEdit) {
         await updateCategory(formData, valuesForUpdate._id);
-        console.log("Update is called" , valuesForUpdate)
+        console.log("Update is called", valuesForUpdate);
       } else {
         await addCategory(formData);
       }
@@ -167,6 +165,7 @@ const CategoryMaster = () => {
       setIsEdit(false);
       setSubmitted(false);
       categoryForm.resetForm();
+
       toggle();
     },
   });
@@ -179,10 +178,13 @@ const CategoryMaster = () => {
         onCloseClick={() => setDeleteModal(false)}
       />
       <Container fluid>
-      <BreadCrumb grandParent="Setup" parent="Manage Category" child="Category" />
+        <BreadCrumb
+          grandParent="Setup"
+          parent="Manage Category"
+          child="Category"
+        />
         <Row>
           <Col lg={12}>
-            
             <Card id="orderList">
               <CardHeader className="card-header border-0">
                 <div className="d-flex align-items-center">
@@ -215,7 +217,6 @@ const CategoryMaster = () => {
                         }}
                       >
                         <i className="ri-add-line align-bottom me-1"></i> Add
-                        
                       </button>{" "}
                     </div>
                   </div>
@@ -226,8 +227,8 @@ const CategoryMaster = () => {
                   <table className="table">
                     <thead className="table-active">
                       <tr>
-                        <th style={{width : "100px"}}>index</th>
-                        <th style={{width : "400px"}}>Category Title</th>
+                        <th style={{ width: "100px" }}>index</th>
+                        <th style={{ width: "400px" }}>Category Title</th>
                         <th>Status</th>
                         <th>Action</th>
                       </tr>
@@ -256,7 +257,7 @@ const CategoryMaster = () => {
                             </td>
 
                             <td>
-                            <button
+                              <button
                                 className="btn btn-sm btn-soft-info edit-list mx-1"
                                 onClick={() => {
                                   setIsEdit(true);
@@ -275,7 +276,6 @@ const CategoryMaster = () => {
                               >
                                 <i className="ri-delete-bin-5-fill align-bottom" />
                               </button>
-                             
                             </td>
                           </tr>
                         ))
@@ -283,42 +283,42 @@ const CategoryMaster = () => {
                         <Loader error={tableData} />
                       )}
                       <Pagination>
-                    <PaginationItem>
-                      <PaginationLink
-                        previous
-                        onClick={() =>
-                          setCurrentPage((prev) =>
-                            prev === 1 ? prev : prev - 1
-                          )
-                        }
-                      />
-                    </PaginationItem>
-                    {Array.from({
-                      length: Math.ceil(tableData.length / ITEMS_PER_PAGE),
-                    }).map((_, index) => (
-                      <PaginationItem
-                        key={index + 1}
-                        active={index + 1 === currentPage}
-                      >
-                        <PaginationLink onClick={() => paginate(index + 1)}>
-                          {index + 1}
-                        </PaginationLink>
-                      </PaginationItem>
-                    ))}
-                    <PaginationItem>
-                      <PaginationLink
-                        next
-                        onClick={() =>
-                          setCurrentPage((prev) =>
-                            prev ===
-                            Math.ceil(tableData.length / ITEMS_PER_PAGE)
-                              ? prev
-                              : prev + 1
-                          )
-                        }
-                      />
-                    </PaginationItem>
-                  </Pagination>
+                        <PaginationItem>
+                          <PaginationLink
+                            previous
+                            onClick={() =>
+                              setCurrentPage((prev) =>
+                                prev === 1 ? prev : prev - 1
+                              )
+                            }
+                          />
+                        </PaginationItem>
+                        {Array.from({
+                          length: Math.ceil(tableData.length / ITEMS_PER_PAGE),
+                        }).map((_, index) => (
+                          <PaginationItem
+                            key={index + 1}
+                            active={index + 1 === currentPage}
+                          >
+                            <PaginationLink onClick={() => paginate(index + 1)}>
+                              {index + 1}
+                            </PaginationLink>
+                          </PaginationItem>
+                        ))}
+                        <PaginationItem>
+                          <PaginationLink
+                            next
+                            onClick={() =>
+                              setCurrentPage((prev) =>
+                                prev ===
+                                Math.ceil(tableData.length / ITEMS_PER_PAGE)
+                                  ? prev
+                                  : prev + 1
+                              )
+                            }
+                          />
+                        </PaginationItem>
+                      </Pagination>
                     </tbody>
                   </table>
                 </div>
@@ -335,7 +335,6 @@ const CategoryMaster = () => {
                     onSubmit={(e) => {
                       e.preventDefault();
                       categoryForm.handleSubmit();
-                      window.location.reload();
                       return false;
                     }}
                   >
@@ -348,7 +347,6 @@ const CategoryMaster = () => {
                           maxFiles={3}
                           name="files"
                           className="filepond filepond-input-multiple"
-                          accept=".jpg,.jpeg,.png"
                           allowFilePoster={true}
                         ></FilePond>
                         <img
@@ -366,8 +364,6 @@ const CategoryMaster = () => {
                             borderRadius: "3px",
                           }}
                         />
-
-
                       </div>
 
                       <div className="mb-3">
@@ -398,8 +394,6 @@ const CategoryMaster = () => {
                         ) : null}
                       </div>
 
-                     
-
                       <div className="mb-3">
                         <Label htmlFor="id-field" className="form-label">
                           description
@@ -429,29 +423,29 @@ const CategoryMaster = () => {
                       </div>
 
                       <div className="mt-2">
-                                <Input
-                                  type="checkbox"
-                                  id="isActive"
-                                  label="Is Active"
-                                  name="isActive"
-                                  checked={categoryForm.values.isActive || ""}
-                                  onChange={categoryForm.handleChange}
-                                  onBlur={categoryForm.handleBlur}
-                                />
+                        <Input
+                          type="checkbox"
+                          id="isActive"
+                          label="Is Active"
+                          name="isActive"
+                          checked={
+                            isEdit
+                              ? valuesForUpdate.isActive
+                                ? categoryForm.values.isActive
+                                : categoryForm.values.isActive
+                              : categoryForm.values.isActive || ""
+                          }
+                          onChange={categoryForm.handleChange}
+                          onBlur={categoryForm.handleBlur}
+                        />
 
-                                <Label
-                                  className="form-label g-2"
-                                  htmlFor="active"
-                                >
-                                  Is Active
-                                </Label>
-                              </div>
-                  
+                        <Label className="form-label g-2" htmlFor="active">
+                          Is Active
+                        </Label>
+                      </div>
                     </ModalBody>
                     <div className="modal-footer">
                       <div className="hstack gap-2 justify-content-end">
-                        
-
                         {!buttnLoading ? (
                           <React.Fragment>
                             <button
@@ -486,11 +480,9 @@ const CategoryMaster = () => {
                           onClick={() => {
                             setShowModal(false);
                             setValuesForUpdate("");
-                            window.location.reload();
                           }}
                         >
                           Close
-                          
                         </button>
                       </div>
                     </div>
