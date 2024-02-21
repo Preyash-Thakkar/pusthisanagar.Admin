@@ -184,13 +184,12 @@ const NewCustomer = () => {
 
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
-
-  useEffect(()=>{
-    setCustomersData(CustomersData.slice(indexOfFirstItem, indexOfLastItem))
-    
-  },[currentPage])
-
+  const currentItems = CustomersData.slice(indexOfFirstItem, indexOfLastItem);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  useEffect(()=>{
+    setCustomersData(currentItems.slice(indexOfFirstItem, indexOfLastItem))
+    
+  },[])
 
   document.title = "Customers";
   return (
@@ -240,7 +239,7 @@ const NewCustomer = () => {
                         </tr>
                       </thead>
                       <tbody  className="list form-check-all">
-                        {CustomersData.map((customer, key) => (
+                        {currentItems.map((customer, key) => (
                           <tr key={customer.id}>
                             <th scope="row">
                               <td className="product-name">{key + 1}</td>
