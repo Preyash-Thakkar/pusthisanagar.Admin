@@ -32,7 +32,7 @@ const UserProfile = () => {
   const url = `${process.env.REACT_APP_BASE_URL}`;
   const { id } = useParams();
   const { updateUser, getSpecificUser } = useContext(SignContext);
-  const [UserInfo, setUserInfo] = useState({ roles: [], status: "" });
+  const [UserInfo, setUserInfo] = useState({ roles: "", status: "" });
   const [Error, setError] = useState("");
   const [Success, setSuccess] = useState("");
   const navigate = useNavigate();

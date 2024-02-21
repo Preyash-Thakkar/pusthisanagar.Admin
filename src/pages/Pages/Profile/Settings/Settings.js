@@ -62,7 +62,7 @@ const Settings = () => {
     const res = await updateUser(UserInfo, id);
     // console.log(res);
     if (res.success) {
-      // setSuccess(res.msg);
+      setSuccess(res.msg);
       toast.success("Updated Successfully", { autoClose: 3000 });
     } else {
       setError(res.msg);
@@ -103,7 +103,7 @@ const Settings = () => {
     getspecificUser(id);
   }, []);
 
-  document.title = "Profile Settings | By Shalin";
+  document.title = "Profile Settings | Pushti";
 
   return (
     <React.Fragment>
@@ -112,7 +112,7 @@ const Settings = () => {
         <Container fluid>
           <div className="position-relative mx-n4 mt-n4">
             <div className="profile-wid-bg profile-setting-img">
-              <img src={progileBg} className="profile-wid-img" alt="" />
+              <img src={`${process.env.REACT_APP_BASE_URL}/${UserInfo.image}`} className="profile-wid-img" alt="" />
             </div>
           </div>
           <Row>

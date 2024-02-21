@@ -10,6 +10,7 @@ import { useSelector, useDispatch } from "react-redux";
 import withRouter from "../../Components/Common/withRouter";
 
 const Logout = (props) => {
+  localStorage.clear()
   const dispatch = useDispatch();
 
   const { isUserLogout } = useSelector((state) => ({
