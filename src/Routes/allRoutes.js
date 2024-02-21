@@ -246,7 +246,7 @@ const publicRoutes = [
   { path: "/login", component: <SignState><Login /></SignState> },
   { path: "/", component: <SignState><Login /></SignState> },
   { path: "/forgot-password", component: <SignState><ForgetPasswordPage /></SignState> },
-  // { path: "/register", component: <Register /> },
+  { path: "/register", component: <Register /> },
 
   //AuthenticationInner pages
   { path: "/auth-signin-basic", component: <BasicSignIn /> },
