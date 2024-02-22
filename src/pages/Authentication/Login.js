@@ -56,6 +56,7 @@ const Login = () => {
         window.localStorage.setItem("authToken", res.token);
         window.localStorage.setItem("user", JSON.stringify(res));
         window.localStorage.setItem("rights", JSON.stringify(res.roles));
+        window.localStorage.setItem("id", (res.roles._id));
         if (res.roles.role === "Admin") {
           setSuccess(res.msg);
           navigate("/dashboard");
